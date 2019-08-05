@@ -45,91 +45,53 @@
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
-  
   (ASCOM-GET "/interfaceversion" [] (success 2))
-  
   (ASCOM-GET "/connected" [] (success true))
-
   (ASCOM-PUT "/connected" [Connected]
              (println "Mock setting connected to" Connected)
              (success))
-
-  (ASCOM-GET "/sensorname" [] (success ""))
-
-  (ASCOM-GET "/canasymmetricbin" [] (success false))
-
-  (ASCOM-GET "/binx" [] (success 1))
-
-  (ASCOM-GET "/biny" [] (success 1))
-
-  (ASCOM-PUT "/binx" [ClientID] (success))
-
-  (ASCOM-PUT "/biny" [ClientID] (success))
-
-  (ASCOM-GET "/maxbinx" [] (success 1))
-
-  (ASCOM-GET "/maxbiny" [] (success 1))
-
-  (ASCOM-GET "/cameraxsize" [] (success 6004))
-
-  (ASCOM-GET "/cameraysize" [] (success 4004))
-
-  (ASCOM-GET "/sensortype" [] (success 0))
-
-  (ASCOM-GET "/maxadu" [] (success 65535))
-
-  (ASCOM-GET "/startx" [] (success 0))
-
-  (ASCOM-GET "/starty" [] (success 0))
-
-  (ASCOM-PUT "/startx" [] (success))
-
-  (ASCOM-PUT "/starty" [] (success))
-
-  (ASCOM-GET "/gainmin" [] (success 100))
-
-  (ASCOM-GET "/gainmax" [] (success 6400))
-
-  (ASCOM-GET "/gain" [] (success 3)) ;; index into gains array
-
-  (ASCOM-PUT "/gain" [Gain] (success Gain)) ;; index into gains array
-
-  (ASCOM-GET "/driverinfo" [] (success "DCC - Clojure ASCOM bridge"))
-
-  (ASCOM-GET "/exposuremin" [] (success 1))
-
-  (ASCOM-GET "/exposuremax" [] (success 3600))
-
-  (ASCOM-GET "/cooleron" [] (success false))
-
-  (ASCOM-GET "/cansetccdtemperature" [] (success false))
-
-  (ASCOM-GET "/ccdtemperature" [] (not-supported "Not supported (Thanks Nikon!)"))
-
-  (ASCOM-GET "/setccdtemperature" [] (not-supported "Not supported (Thanks Nikon!)"))
-
-  (ASCOM-GET "/heatsinktemperature" [] (not-supported "Not supported (Thanks Nikon!)"))
-
-  (ASCOM-GET "/cangetcoolerpower" [] (success false))
-
-  (ASCOM-GET "/numx" [] (success 6004))
-
-  (ASCOM-GET "/numy" [] (success 4004))
-
-  (ASCOM-PUT "/numx" [] (success))
-
-  (ASCOM-PUT "/numy" [] (success))
-
-  (ASCOM-GET "/canabortexposure" [] (success true))
-
-  (ASCOM-GET "/imageready" [] (success false));;;; TODO:
   
+  (ASCOM-GET "/sensorname" [] (success ""))
+  (ASCOM-GET "/canasymmetricbin" [] (success false))
+  (ASCOM-GET "/binx" [] (success 1))
+  (ASCOM-GET "/biny" [] (success 1))
+  (ASCOM-PUT "/binx" [ClientID] (success))
+  (ASCOM-PUT "/biny" [ClientID] (success))
+  (ASCOM-GET "/maxbinx" [] (success 1))
+  (ASCOM-GET "/maxbiny" [] (success 1))
+  (ASCOM-GET "/cameraxsize" [] (success 6004))
+  (ASCOM-GET "/cameraysize" [] (success 4004))
+  (ASCOM-GET "/sensortype" [] (success 0))
+  (ASCOM-GET "/maxadu" [] (success 65535))
+  (ASCOM-GET "/startx" [] (success 0))
+  (ASCOM-GET "/starty" [] (success 0))
+  (ASCOM-PUT "/startx" [] (success))
+  (ASCOM-PUT "/starty" [] (success))
+  (ASCOM-GET "/gainmin" [] (success 100))
+  (ASCOM-GET "/gainmax" [] (success 6400))
+  (ASCOM-GET "/gain" [] (success 3)) ;; index into gains array
+  (ASCOM-PUT "/gain" [Gain] (success Gain)) ;; index into gains array
+  (ASCOM-GET "/driverinfo" [] (success "DCC - Clojure ASCOM bridge"))
+  (ASCOM-GET "/exposuremin" [] (success 1))
+  (ASCOM-GET "/exposuremax" [] (success 3600))
+  (ASCOM-GET "/cooleron" [] (success false))
+  (ASCOM-GET "/cansetccdtemperature" [] (success false))
+  (ASCOM-GET "/ccdtemperature" [] (not-supported "Not supported (Thanks Nikon!)"))
+  (ASCOM-GET "/setccdtemperature" [] (not-supported "Not supported (Thanks Nikon!)"))
+  (ASCOM-GET "/heatsinktemperature" [] (not-supported "Not supported (Thanks Nikon!)"))
+  (ASCOM-GET "/cangetcoolerpower" [] (success false))
+  (ASCOM-GET "/numx" [] (success 6004))
+  (ASCOM-GET "/numy" [] (success 4004))
+  (ASCOM-PUT "/numx" [] (success))
+  (ASCOM-PUT "/numy" [] (success))
+  (ASCOM-GET "/canabortexposure" [] (success true))
+  (ASCOM-GET "/imageready" [] (success false));;;; TODO:
   (ASCOM-GET "/camerastate" []
              (println "CAMERA STATE " (dcc/get-camera-state @d))
              (success (get dcc/camera-states (dcc/get-camera-state @d))));; TODO: Complete 
-  
+
   (ASCOM-PUT "/startexposure" [Duration Light]
-       (try
+      (try
          (Integer/parseInt Duration)
          (try
            (let [_ (swap! d dcc/start-bulb)
@@ -144,11 +106,11 @@
            {:status 400 :body "Duration parameter not numeric"})))
   
   (ASCOM-PUT "/abortexposure" []
-             (swap! d dcc/stop-bulb)
+            (swap! d dcc/stop-bulb)
              (success))
 
   (ASCOM-PUT "/stopexposure" []
-             (swap! d dcc/stop-bulb)
+            (swap! d dcc/stop-bulb)
              (success))
 
   (route/not-found "Not Found"))
