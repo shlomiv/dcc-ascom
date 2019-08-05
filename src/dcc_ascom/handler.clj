@@ -28,132 +28,114 @@
      (#{400 500} err-code) {:status 400 :body response}
      :else {:status 500 :body (str "Dont know err-code (" err-code "): " response)})))
 
+(defmacro ASCOM-GET [path args & v]
+  `(GET ~(str "/api/v1/camera/:id" path) ~(into '[id  ClientID ClientTransactionID] args) ~@v))
+
+(defmacro ASCOM-PUT [path args & v]
+  `(PUT ~(str "/api/v1/camera/:id" path) ~(into '[id  ClientID ClientTransactionID] args) ~@v))
+
+(defmacro success
+  ([& v] `(ascom-response ~@'[ClientTransactionID 200] ~@v)))
+
+(defmacro not-supported[v]
+  `(ascom-response ~@'[ClientTransactionID 500] ~v))
+
+(defmacro bad-args[v]
+  `(ascom-response ~@'[ClientTransactionID 400] ~v))
+
 (defroutes app-routes
   (GET "/" [] "Hello World")
-  (GET "/api/v1/camera/:id/interfaceversion" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 2))
-
-  (GET "/api/v1/camera/:id/connected" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 true))
-
-  (PUT "/api/v1/camera/:id/connected" [id Connected ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200))
-
-  (GET "/api/v1/camera/:id/sensorname" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 ""))
-
-  (GET "/api/v1/camera/:id/canasymmetricbin" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 false))
-
-  (GET "/api/v1/camera/:id/binx" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 1))
-
-  (GET "/api/v1/camera/:id/biny" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 1))
-
-  (PUT "/api/v1/camera/:id/binx" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200))
-
-  (PUT "/api/v1/camera/:id/biny" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200))
-
-  (GET "/api/v1/camera/:id/maxbinx" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 1))
-
-  (GET "/api/v1/camera/:id/maxbiny" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 1))
-
-  (GET "/api/v1/camera/:id/cameraxsize" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 6004))
-
-  (GET "/api/v1/camera/:id/cameraysize" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 4004))
-
-  (GET "/api/v1/camera/:id/sensortype" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 0))
-
-  (GET "/api/v1/camera/:id/maxadu" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 65535))
-
-  (GET "/api/v1/camera/:id/startx" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 0))
-
-  (GET "/api/v1/camera/:id/starty" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 0))
-
-  (PUT "/api/v1/camera/:id/startx" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200))
-
-  (PUT "/api/v1/camera/:id/starty" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200))
-
-  (GET "/api/v1/camera/:id/gainmin" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 100))
-
-  (GET "/api/v1/camera/:id/gainmax" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 6400))
-
-  (GET "/api/v1/camera/:id/gain" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 3)) ;; index into gains array
-
-  (PUT "/api/v1/camera/:id/gain" [id Gain ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 3 Gain)) ;; index into gains array
-
-  (GET "/api/v1/camera/:id/driverinfo" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 "DCC - Clojure ASCOM bridge"))
-
-  (GET "/api/v1/camera/:id/exposuremin" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 1))
-
-  (GET "/api/v1/camera/:id/exposuremax" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 3600))
-
-  (GET "/api/v1/camera/:id/cooleron" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 false))
-
-  (GET "/api/v1/camera/:id/cansetccdtemperature" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 false))
-
-  (GET "/api/v1/camera/:id/ccdtemperature" [id ClientID ClientTransactionID]
-       {:status 500 :body "Not supported (Thanks Nikon!)"})
-  (GET "/api/v1/camera/:id/setccdtemperature" [id ClientID ClientTransactionID]
-       {:status 500 :body "Not supported (Thanks Nikon!)"})
-  (GET "/api/v1/camera/:id/heatsinktemperature" [id ClientID ClientTransactionID]
-       {:status 500 :body "Not supported (Thanks Nikon!)"})
-  (GET "/api/v1/camera/:id/cangetcoolerpower" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 false))
-
-  (GET "/api/v1/camera/:id/numx" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 6004))
-
-  (GET "/api/v1/camera/:id/numy" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 4004))
-
-  (PUT "/api/v1/camera/:id/numx" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200))
-
-  (PUT "/api/v1/camera/:id/numy" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200))
-
-  (GET "/api/v1/camera/:id/canabortexposure" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 true))
-
-  (GET "/api/v1/camera/:id/imageready" [id ClientID ClientTransactionID]
-       (ascom-response ClientTransactionID 200 false));;;; TODO:
   
-  (GET "/api/v1/camera/:id/camerastate" [id ClientID ClientTransactionID]
-       (println "CAMERA STATE " (dcc/get-camera-state @d))
-       (ascom-response ClientTransactionID 200 (get dcc/camera-states (dcc/get-camera-state @d))));; TODO: Complete 
+  (ASCOM-GET "/interfaceversion" [] (success 2))
   
-  (PUT "/api/v1/camera/:id/startexposure" [id Duration Light ClientID ClientTransactionID]
+  (ASCOM-GET "/connected" [] (success true))
+
+  (ASCOM-PUT "/connected" [Connected]
+             (println "Mock setting connected to" Connected)
+             (success))
+
+  (ASCOM-GET "/sensorname" [] (success ""))
+
+  (ASCOM-GET "/canasymmetricbin" [] (success false))
+
+  (ASCOM-GET "/binx" [] (success 1))
+
+  (ASCOM-GET "/biny" [] (success 1))
+
+  (ASCOM-PUT "/binx" [ClientID] (success))
+
+  (ASCOM-PUT "/biny" [ClientID] (success))
+
+  (ASCOM-GET "/maxbinx" [] (success 1))
+
+  (ASCOM-GET "/maxbiny" [] (success 1))
+
+  (ASCOM-GET "/cameraxsize" [] (success 6004))
+
+  (ASCOM-GET "/cameraysize" [] (success 4004))
+
+  (ASCOM-GET "/sensortype" [] (success 0))
+
+  (ASCOM-GET "/maxadu" [] (success 65535))
+
+  (ASCOM-GET "/startx" [] (success 0))
+
+  (ASCOM-GET "/starty" [] (success 0))
+
+  (ASCOM-PUT "/startx" [] (success))
+
+  (ASCOM-PUT "/starty" [] (success))
+
+  (ASCOM-GET "/gainmin" [] (success 100))
+
+  (ASCOM-GET "/gainmax" [] (success 6400))
+
+  (ASCOM-GET "/gain" [] (success 3)) ;; index into gains array
+
+  (ASCOM-PUT "/gain" [Gain] (success Gain)) ;; index into gains array
+
+  (ASCOM-GET "/driverinfo" [] (success "DCC - Clojure ASCOM bridge"))
+
+  (ASCOM-GET "/exposuremin" [] (success 1))
+
+  (ASCOM-GET "/exposuremax" [] (success 3600))
+
+  (ASCOM-GET "/cooleron" [] (success false))
+
+  (ASCOM-GET "/cansetccdtemperature" [] (success false))
+
+  (ASCOM-GET "/ccdtemperature" [] (not-supported "Not supported (Thanks Nikon!)"))
+
+  (ASCOM-GET "/setccdtemperature" [] (not-supported "Not supported (Thanks Nikon!)"))
+
+  (ASCOM-GET "/heatsinktemperature" [] (not-supported "Not supported (Thanks Nikon!)"))
+
+  (ASCOM-GET "/cangetcoolerpower" [] (success false))
+
+  (ASCOM-GET "/numx" [] (success 6004))
+
+  (ASCOM-GET "/numy" [] (success 4004))
+
+  (ASCOM-PUT "/numx" [] (success))
+
+  (ASCOM-PUT "/numy" [] (success))
+
+  (ASCOM-GET "/canabortexposure" [] (success true))
+
+  (ASCOM-GET "/imageready" [] (success false));;;; TODO:
+  
+  (ASCOM-GET "/camerastate" []
+             (println "CAMERA STATE " (dcc/get-camera-state @d))
+             (success (get dcc/camera-states (dcc/get-camera-state @d))));; TODO: Complete 
+  
+  (ASCOM-PUT "/startexposure" [Duration Light]
        (try
          (Integer/parseInt Duration)
          (try
            (let [_ (swap! d dcc/start-bulb)
                  _ (future
                      (Thread/sleep (* 1000 (Integer/parseInt Duration)))
-                     (swap! d dcc/stop-bulb))]
-             (ascom-response ClientTransactionID 200))
+                     (swap! d dcc/stop-bulb))] (success))
 
            (catch Exception e
              {:status 500 :body (str e)}))
@@ -161,13 +143,13 @@
          (catch Exception e
            {:status 400 :body "Duration parameter not numeric"})))
   
-  (PUT "/api/v1/camera/:id/abortexposure" [id ClientID ClientTransactionID]
-       (swap! d dcc/stop-bulb)
-       (ascom-response ClientTransactionID 200))
+  (ASCOM-PUT "/abortexposure" []
+             (swap! d dcc/stop-bulb)
+             (success))
 
-  (PUT "/api/v1/camera/:id/stopexposure" [id ClientID ClientTransactionID]
-       (swap! d dcc/stop-bulb)
-       (ascom-response ClientTransactionID 200))
+  (ASCOM-PUT "/stopexposure" []
+             (swap! d dcc/stop-bulb)
+             (success))
 
   (route/not-found "Not Found"))
 
